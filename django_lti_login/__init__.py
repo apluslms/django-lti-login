@@ -7,15 +7,6 @@ SAFE_CHARACTERS_SET = frozenset(SAFE_CHARACTERS)
 KEY_LENGTH = 6, 128
 
 
-class LTIException(Exception):
-    """
-    Signals problems processing LTI request.
-    """
-    def __init__(self, message):
-        self.message = message
-        super().__init__()
-
-
 def accept_course(oauth_request, user):
     import logging
     logger = logging.getLogger('gjango_lti_login')

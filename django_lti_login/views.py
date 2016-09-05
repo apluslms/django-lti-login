@@ -1,14 +1,13 @@
 import logging
 from django.conf import settings
 from django.contrib.auth import authenticate, login
-from django.http.response import HttpResponse, HttpResponseRedirect
-from django.shortcuts import resolve_url
+from django.core.exceptions import PermissionDenied
+from django.shortcuts import redirect
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 from oauthlib.common import urlencode
 from oauthlib.oauth1 import SignatureOnlyEndpoint
 
-from . import LTIException
 from .validators import LTIRequestValidator
 
 
@@ -32,31 +31,31 @@ def lti_login(request):
     if 'CONTENT_TYPE' in headers:
         headers['Content-Type'] = headers['CONTENT_TYPE']
 
+    # create oauth endpoint and validate request
     endpoint = SignatureOnlyEndpoint(LTIRequestValidator())
-    try:
-        is_valid, oauth_request = endpoint.validate_request(uri, method, body, headers)
+    is_valid, oauth_request = endpoint.validate_request(uri, method, body, headers)
 
-        if not is_valid:
-            logger.warning('Invalid LTI login attempt.')
-            raise LTIException('Not a valid LTI request')
+    if not is_valid:
+        logger.warning('Invalid LTI login attempt.')
+        raise PermissionDenied('Not a valid LTI request')
 
-        if oauth_request.lti_version != 'LTI-1p0' \
-        or oauth_request.lti_message_type != 'basic-lti-launch-request':
-            logger.warning('LTI login attempt without LTI 1.0 launch request.')
-            raise LTIException('Not a valid LTI 1.0 launch request')
+    if oauth_request.lti_version != 'LTI-1p0' \
+    or oauth_request.lti_message_type != 'basic-lti-launch-request':
+        logger.warning('LTI login attempt without LTI 1.0 launch request.')
+        raise PermissionDenied('Not a valid LTI 1.0 launch request')
 
-        user = authenticate(oauth_request=oauth_request)
-        if not user:
-            raise LTIException('No valid user found in the LTI request.')
-        if not user.is_active:
-            logger.warning('LTI login attempt for inactive user: %s', user.username)
-            raise LTIException('The user is not active.')
+    # authenticate user
+    user = authenticate(oauth_request=oauth_request)
+    if not user:
+        raise PermissionDenied('No valid user found in the LTI request.')
+    if not user.is_active:
+        logger.warning('LTI login attempt for inactive user: %s', user)
+        raise PermissionDenied('The user is not active.')
 
-        request.oauth = oauth_request
-        login(request, user)
-        logger.debug('LTI authenticated user logged in: %s', user.username)
+    # login the user
+    request.oauth = oauth_request
+    login(request, user)
 
-        return HttpResponseRedirect(resolve_url(settings.LOGIN_REDIRECT_URL))
-
-    except LTIException as e:
-        return HttpResponse(e.message, content_type='text/plain', status=403)
+    # finally redirect to main page
+    logger.debug('LTI authenticated user logged in: %s', user)
+    return redirect(settings.LOGIN_REDIRECT_URL)
