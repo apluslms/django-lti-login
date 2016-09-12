@@ -54,8 +54,9 @@ def lti_login(request):
 
     # login the user
     request.oauth = oauth_request
+    oauth_request.redirect_url = settings.LOGIN_REDIRECT_URL
     login(request, user)
 
     # finally redirect to main page
     logger.debug('LTI authenticated user logged in: %s', user)
-    return redirect(settings.LOGIN_REDIRECT_URL)
+    return redirect(oauth_request.redirect_url)
