@@ -43,5 +43,9 @@ class LTIClient(models.Model):
         ordering = ['key']
 
     def __str__(self):
-        return "%s" % (self.key)
+        desc = str(self.description)[:97]
+        if len(desc) == 97:
+            desc += '...'
+        desc.replace('\n', ' ')
+        return desc
 
