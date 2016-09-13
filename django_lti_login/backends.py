@@ -54,12 +54,12 @@ class LTIAuthBackend(ModelBackend):
                 return None
 
             # create new
-            logger.info('Creating a new LTI authenticated user: %s', username)
             user = UserModel.objects.create_user(username, email, first_name=first_name, last_name=last_name)
             user.set_unusable_password()
+            logger.info('Created a new LTI authenticated user: %s', user)
 
         user.is_staff = staff_roles and not roles.isdisjoint(staff_roles) or False
         user.save()
 
-        logger.info('LTI authentication accepted for: %s', username)
+        logger.info('LTI authentication accepted for: %s', user)
         return user
