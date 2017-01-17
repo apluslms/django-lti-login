@@ -8,6 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 from oauthlib.common import urlencode
 from oauthlib.oauth1 import SignatureOnlyEndpoint
 
+from .signals import lti_login_authenticated
 from .validators import LTIRequestValidator
 
 
@@ -51,6 +52,9 @@ def lti_login(request):
     if not user.is_active:
         logger.warning('LTI login attempt for inactive user: %s', user)
         raise PermissionDenied('The user is not active.')
+
+    # signal that authentication step has been done
+    lti_login_authenticated.send(sender=user.__class__, request=request, user=user)
 
     # login the user
     request.oauth = oauth_request
