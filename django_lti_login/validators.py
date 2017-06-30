@@ -1,6 +1,6 @@
 from oauthlib.oauth1 import RequestValidator
 
-from . import SAFE_CHARACTERS_SET, KEY_LENGTH
+from . import SAFE_CHARACTERS, KEY_LENGTH, NONCE_LENGTH
 from .models import LTIClient
 
 
@@ -16,7 +16,7 @@ class LTIRequestValidator(RequestValidator):
     @property
     def safe_characters(self):
         """ Allow also '-' character used in some uuid examples out there. """
-        return SAFE_CHARACTERS_SET
+        return SAFE_CHARACTERS
 
     @property
     def client_key_length(self):
@@ -26,7 +26,7 @@ class LTIRequestValidator(RequestValidator):
     @property
     def nonce_length(self):
         """ Loosen limits. """
-        return KEY_LENGTH
+        return NONCE_LENGTH
 
     @property
     def enforce_ssl(self):
