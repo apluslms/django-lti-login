@@ -2,6 +2,7 @@ import logging
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import ModelBackend
+from .apps import app_settings
 
 
 logger = logging.getLogger('gjango_lti_login.backends')
@@ -11,8 +12,6 @@ class LTIAuthBackend(ModelBackend):
     """
     Authenticates the trusted user from the LTI request.
     """
-    create_unknown_user = True
-
     def authenticate(self, oauth_request=None):
         if not oauth_request:
             return None
@@ -21,8 +20,8 @@ class LTIAuthBackend(ModelBackend):
             return None
 
         UserModel = get_user_model()
-        accepted_roles = getattr(settings, 'LTI_ACCEPTED_ROLES', None)
-        staff_roles = getattr(settings, 'LTI_STAFF_ROLES', None)
+        accepted_roles = app_settings.ACCEPTED_ROLES
+        staff_roles = app_settings.STAFF_ROLES
 
         # FIXME: doesn't handle renamed username field
         username_len = UserModel._meta.get_field('username').max_length
@@ -50,7 +49,7 @@ class LTIAuthBackend(ModelBackend):
             user.first_name = first_name
             user.last_name = last_name
         except UserModel.DoesNotExist:
-            if not self.create_unknown_user:
+            if not app_settings.CREATE_UNKNOWN_USER:
                 return None
 
             # create new
