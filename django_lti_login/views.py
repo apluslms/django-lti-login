@@ -20,7 +20,7 @@ logger = logging.getLogger('django_lti_login.views')
 @require_http_methods(["POST"])
 def lti_login(request):
     """
-    Accepts LTI launch requests and logs in matching local users.
+    Accepts LTI launch requests
     """
     # Extract request data for oauthlib.
     uri = request.build_absolute_uri()
@@ -37,21 +37,21 @@ def lti_login(request):
     is_valid, oauth_request = endpoint.validate_request(uri, method, body, headers)
 
     if not is_valid:
-        logger.warning('Invalid LTI login attempt.')
-        raise PermissionDenied('Not a valid LTI request')
+        logger.warning('An invalid LTI login request.')
+        raise PermissionDenied('An invalid LTI login request')
 
-    if oauth_request.lti_version != 'LTI-1p0' \
-    or oauth_request.lti_message_type != 'basic-lti-launch-request':
-        logger.warning('LTI login attempt without LTI 1.0 launch request.')
-        raise PermissionDenied('Not a valid LTI 1.0 launch request')
+    if (oauth_request.lti_version != 'LTI-1p0' or
+        oauth_request.lti_message_type != 'basic-lti-launch-request'):
+        logger.warning('A LTI login request is not LTI-1p0 or basic-lti-launch-request.')
+        raise PermissionDenied('Version is not LTI-1p0 or type is not basic-lti-launch-request for a LTI login request.')
 
     # authenticate user
     user = authenticate(oauth_request=oauth_request)
     if not user:
-        raise PermissionDenied('No valid user found in the LTI request.')
+        raise PermissionDenied('Authentication of a LTI request did not yield an user')
     if not user.is_active:
-        logger.warning('LTI login attempt for inactive user: %s', user)
-        raise PermissionDenied('The user is not active.')
+        logger.warning('A LTI login attempt by inactive user: %s', user)
+        raise PermissionDenied('An authenticated user is not active')
 
     # Set vars for listenters
     request.oauth = oauth_request
@@ -71,5 +71,5 @@ def lti_login(request):
     for args, kwargs in oauth_request.set_cookies:
         response.set_cookie(*args, **kwargs)
 
-    logger.debug('Logged in a LTI authenticated user: %s', user)
+    logger.debug('Login completed for a LTI authenticated user: %s', user)
     return response

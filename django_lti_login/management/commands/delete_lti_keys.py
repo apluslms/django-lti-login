@@ -4,13 +4,13 @@ from django.core.management.base import BaseCommand, CommandError
 from django_lti_login.models import LTIClient
 
 class Command(BaseCommand):
-    help = 'Delete lti login keys from database'
+    help = 'Delete a lti login key from the database'
 
     def add_arguments(self, parser):
         parser.add_argument('-k', '--key',
-                            help="Key filter")
+                            help="A key filter")
         parser.add_argument('-d', '--desc',
-                            help="Description filter")
+                            help="A description filter")
 
     def handle(self, *args, **options):
         key = options['key']
@@ -26,7 +26,7 @@ class Command(BaseCommand):
         amount = len(objs)
 
         if not amount:
-            raise CommandError("No keys found for deleting")
+            raise CommandError("No keys found")
 
         self.stdout.write(self.style.WARNING(
             "Listing {} keys about to be deleted".format(amount)
@@ -40,19 +40,19 @@ class Command(BaseCommand):
                 .format(c=lticlient)
             )
 
-        if not self.confirmation("Are you sure, you wan't to delete listed keys?"):
-            self.stdout.write(self.style.WARNING("Deletion cancelled."))
+        if not self.confirmation("Are you sure that you wan't to delete above keys?"):
+            self.stdout.write(self.style.WARNING("Aborted."))
             return
 
         deleted = LTIClient.objects.filter(key__in=[o.key for o in objs]).delete()[0]
 
         if deleted == amount:
             self.stdout.write(self.style.SUCCESS(
-                "All requested {} keys deleted successfully".format(deleted)
+                "Succesfully deleted all {} keys.".format(deleted)
             ))
         else:
             self.stdout.write(self.style.WARNING(
-                "Only {} keys removed from requested {} keys".format(deleted, amount)
+                "Succesfully deleted only {} keys out of requested {} keys".format(deleted, amount)
             ))
 
     def confirmation(self, message):

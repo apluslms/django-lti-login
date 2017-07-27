@@ -3,13 +3,13 @@ from django.core.management.base import BaseCommand
 from django_lti_login.models import LTIClient
 
 class Command(BaseCommand):
-    help = 'List all lti login keys in database'
+    help = 'List all lti login keys in the database'
 
     def add_arguments(self, parser):
         parser.add_argument('-k', '--key',
-                            help="Key filter")
+                            help="A key filter")
         parser.add_argument('-d', '--desc',
-                            help="Description filter")
+                            help="A description filter")
 
     def handle(self, *args, **options):
         key = options['key']
@@ -24,7 +24,7 @@ class Command(BaseCommand):
         amount = qs.count()
         if amount:
             self.stdout.write(self.style.SUCCESS(
-                "Printing list of {} keys".format(amount)
+                "Printing a list of {} keys".format(amount)
             ))
 
             for lticlient in qs:
@@ -38,5 +38,5 @@ class Command(BaseCommand):
             self.stdout.write("-------")
         else:
             self.stdout.write(self.style.WARNING(
-                "No keys found from database"
+                "No keys found from the database"
             ))
