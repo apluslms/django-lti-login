@@ -16,7 +16,7 @@ class LTIRequestValidator(RequestValidator):
     @property
     def safe_characters(self):
         """ Allow also '-' character used in some uuid examples out there. """
-        return SAFE_CHARACTERS
+        return SAFE_CHARACTERS # set
 
     @property
     def client_key_length(self):
