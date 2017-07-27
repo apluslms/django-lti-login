@@ -53,14 +53,23 @@ def lti_login(request):
         logger.warning('LTI login attempt for inactive user: %s', user)
         raise PermissionDenied('The user is not active.')
 
+    # Set vars for listenters
+    request.oauth = oauth_request
+    oauth_request.redirect_url = settings.LOGIN_REDIRECT_URL
+    oauth_request.set_cookies = []
+
     # signal that authentication step has been done
     lti_login_authenticated.send(sender=user.__class__, request=request, user=user)
 
-    # login the user
-    request.oauth = oauth_request
-    oauth_request.redirect_url = settings.LOGIN_REDIRECT_URL
+    # login the user (sends signal user_logged_in)
     login(request, user)
 
-    # finally redirect to main page
-    logger.debug('LTI authenticated user logged in: %s', user)
-    return redirect(oauth_request.redirect_url)
+    # Create redirect response
+    response = redirect(oauth_request.redirect_url)
+
+    # set possible cookies
+    for args, kwargs in oauth_request.set_cookies:
+        response.set_cookie(*args, **kwargs)
+
+    logger.debug('Logged in a LTI authenticated user: %s', user)
+    return response
