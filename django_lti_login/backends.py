@@ -20,11 +20,11 @@ class LTIAuthBackend(ModelBackend):
             return None
 
         UserModel = get_user_model()
+        username_field = getattr(UserModel, 'USERNAME_FIELD', 'username')
         accepted_roles = app_settings.ACCEPTED_ROLES
         staff_roles = app_settings.STAFF_ROLES
 
-        # FIXME: doesn't handle renamed username field
-        username_len = UserModel._meta.get_field('username').max_length
+        username_len = UserModel._meta.get_field(username_field).max_length
         email_len = UserModel._meta.get_field('email').max_length
         first_name_len = UserModel._meta.get_field('first_name').max_length
         last_name_len = UserModel._meta.get_field('last_name').max_length
@@ -40,10 +40,9 @@ class LTIAuthBackend(ModelBackend):
             logger.warning('LTI login attempt without accepted user role: %s', roles)
             return None
 
-
         try:
             # get
-            user = UserModel.objects.get(username=username)
+            user = UserModel.objects.get(**{username_field: username})
             # update
             user.email = email
             user.first_name = first_name
