@@ -5,7 +5,7 @@ from django.contrib.auth.backends import ModelBackend
 from .apps import app_settings
 
 
-logger = logging.getLogger('gjango_lti_login.backends')
+logger = logging.getLogger('django_lti_login.backends')
 
 
 class LTIAuthBackend(ModelBackend):
