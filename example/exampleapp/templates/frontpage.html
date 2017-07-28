@@ -1,0 +1,11 @@
+{% extends 'bootstrapped.html' %}
+
+{% block content %}
+	<h1>Welcome {{ user }}</h1>
+	<p>
+		You logged in from {{ course_lms }} on course {{ course_label }} {{ course_name }} ( {{ course_id }} ).
+	</p>
+	<p>
+		<a href="{% url 'logout' %}">Logout</a>
+	</p>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends "bootstrapped.html" %}
+
+{% load static %}
+
+{% block styles %}
+	{{ block.super }}
+	<link rel="stylesheet" href="{% static 'login.css' %}">
+{% endblock %}
+
+{% block content %}
+	<div class="modal-dialog">
+		<div class="loginmodal-container">
+			<h1>Login to example app</h1>
+			<br>
+			{% if next %}
+				<p class="alert alert-warning">
+					{% if user.is_authenticated %}
+						Your account doesn't have access to this page. To proceed, please login with an account that has access.
+					{% else %}
+						Please login to see this page.
+					{% endif %}
+				</p>
+			{% endif %}
+			{% if form.errors %}
+				<p class="alert alert-danger">Your username and password didn't match. Please try again.</p>
+			{% endif %}
+			<form method="post" action="{% url 'login' %}">
+				{% csrf_token %}
+				<input type="hidden" name="next" value="{{ next }}" />
+				{% with f=form.username %}
+					<input
+						id="{{ f.id_for_label }}"
+						type="text"
+						name="{{ f.html_name }}"
+						placeholder="{{ f.label }}"
+						maxlength="{{ f.field.max_length }}"
+						value="{{ f.value|default:'' }}">
+				{% endwith %}
+				{% with f=form.password %}
+					<input
+						id="{{ f.id_for_label }}"
+						type="password"
+						name="{{ f.html_name }}"
+						placeholder="{{ f.label }}"
+						maxlength="{{ f.field.max_length }}">
+				{% endwith %}
+				<input type="submit" value="Login">
+			</form>
+		</div>
+	</div>
+{% endblock %}

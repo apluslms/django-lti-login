@@ -1,0 +1,36 @@
+{% extends 'bootstrapped.html' %}
+
+{% block content %}
+	<h1>Welcome Anonymous</h1>
+	<p>
+		This is <b>example</b> LTI authenticated service.
+		You can easily use this project as basis for your own or just look how django-lti-login is hooked in this one.
+		Relevant parts in the code are marked <code># XXX: for django-lti-login</code>
+	</p>
+	<p>
+		To login, point your LMS to <code>{{ request.scheme }}://{{ request.get_host }}{% url 'lti_login' %}</code>.
+		In addition, you will need LTI key (see table or command below).
+	</p>
+	<p>
+		{% if lti_keys.exists %}
+			<table class="table">
+				<tr>
+					<th>Key</th>
+					<th>Secret</th>
+					<th>Description</th>
+				</tr>
+				{% for key in lti_keys %}
+					<tr>
+						<td>{{ key.key }}</td>
+						<td>{{ key.secret }}</td>
+						<td>{{ key.description }}</td>
+					</tr>
+				{% endfor %}
+			</table>
+			You can create more keys with command <code>python manage.py add_lti_key --help</code>.
+		{% else %}
+			You can create your first key with command <code>python manage.py add_lti_key -d "my lms service"</code>.
+			If you refresh this page after creating the key it will be listed here.
+		{% endif %}
+	</p>
+{% endblock %}

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+	{% load i18n %}
+	{% load static %}
+
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	{% block meta %}{% endblock %}
+
+	<title>{% block title %}Example app using LTI login{% endblock %}</title>
+
+	{% block styles %}{% endblock %}
+	{% block scripts %}{% endblock %}
+</head>
+<body>
+	{% block body %}{% endblock %}
+</body>
+</html>
+
