@@ -1,4 +1,3 @@
-from functools import partial
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils.crypto import get_random_string
@@ -9,27 +8,32 @@ from .apps import app_settings
 
 def word_validator(word, charset, length):
     if charset is not None and not frozenset(word).issubset(charset):
-        raise ValidationError("Only following characters are allowed: {}".format(charset))
+        raise ValidationError("Only following characters are allowed: '{}'".format("".join(charset)))
     minlen, maxlen = length
     if len(word) < minlen:
         raise ValidationError("Minimum length is {:d}.".format(minlen))
     if len(word) > maxlen:
         raise ValidationError("Maximum length is {:d}.".format(maxlen))
 
+def create_new_key():
+    return get_random_string(
+        length=app_settings.KEY_LENGTH,
+        allowed_chars=app_settings.KEY_CHARACTERS)
 
-create_new_key = partial(get_random_string,
-                         length=app_settings.KEY_LENGTH,
-                         allowed_chars=app_settings.KEY_CHARACTERS)
-create_new_secret = partial(get_random_string,
-                            length=app_settings.SECRET_LENGTH,
-                            allowed_chars=app_settings.SECRET_CHARACTERS)
+def create_new_secret():
+    return get_random_string(
+        length=app_settings.SECRET_LENGTH,
+        allowed_chars=app_settings.SECRET_CHARACTERS)
 
-key_validator = partial(word_validator,
-                        charset=SAFE_CHARACTERS,
-                        length=KEY_LENGTH)
-secret_validator = partial(word_validator,
-                           charset=None,
-                           length=SECRET_LENGTH)
+def key_validator(key):
+    return word_validator(key,
+                          charset=SAFE_CHARACTERS,
+                          length=KEY_LENGTH)
+
+def secret_validator(secret):
+    return word_validator(secret,
+                          charset=None,
+                          length=SECRET_LENGTH)
 
 
 class LTIClient(models.Model):
@@ -57,3 +61,6 @@ class LTIClient(models.Model):
         desc.replace('\n', ' ')
         return desc
 
+    def __repr__(self):
+        name = self.__class__.__name__
+        return "<%s(key=%s): %s>" % (name, self.key, str(self))
