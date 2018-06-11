@@ -37,8 +37,8 @@ def lti_login(request):
     is_valid, oauth_request = endpoint.validate_request(uri, method, body, headers)
 
     if not is_valid:
-        logger.warning('An invalid LTI login request.')
-        raise PermissionDenied('An invalid LTI login request')
+        logger.warning('An invalid LTI login request. Are the tokens configured correctly?')
+        raise PermissionDenied('An invalid LTI login request. Are the tokens configured correctly?')
 
     if (oauth_request.lti_version != 'LTI-1p0' or
         oauth_request.lti_message_type != 'basic-lti-launch-request'):
