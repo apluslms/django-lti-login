@@ -21,6 +21,9 @@ with open(join(here, 'README.rst'), encoding='utf-8') as f:
 with open(join(here, 'requirements.txt'), encoding='utf-8') as f:
     requirements = f.read()
 requirements = [line.strip() for line in requirements.splitlines()]
+pyjwt_crypto = next(x for x in requirements if x.lower().startswith('pyjwt'))
+pyjwt_crypto = "%s[crypto]%s" % (pyjwt_crypto[:5], pyjwt_crypto[5:])
+
 
 setup(
     name='django-lti-login',
@@ -59,4 +62,9 @@ setup(
     packages=find_packages(exclude=['example']),
     include_package_data=True,
     install_requires=requirements,
+    extras_require=dict(
+        crypto=[
+            pyjwt_crypto,
+        ],
+    ),
 )
