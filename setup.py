@@ -33,7 +33,7 @@ setup(
     keywords='django lti',
     url='https://github.com/Aalto-LeTech/django-lti-login',
     author='Jaakko Kantojärvi',
-    author_email='jaakko@n-1.fi',
+    author_email='jaakko.kantojarvi@aalto.fi',
     license='MIT',
 
     # See https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -56,6 +56,8 @@ setup(
 
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3 :: Only',
     ],
 
