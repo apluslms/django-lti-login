@@ -2,9 +2,11 @@ import logging
 from django.conf import settings
 from django.contrib.auth import authenticate, login
 from django.core.exceptions import PermissionDenied
-from django.shortcuts import redirect
-from django.views.decorators.http import require_http_methods
+from django.http import HttpResponseRedirect
+from django.shortcuts import resolve_url
+from django.utils.http import is_safe_url
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
 from oauthlib.common import urlencode
 from oauthlib.oauth1 import SignatureOnlyEndpoint
 
@@ -55,7 +57,7 @@ def lti_login(request):
 
     # Set vars for listenters
     request.oauth = oauth_request
-    oauth_request.redirect_url = settings.LOGIN_REDIRECT_URL
+    oauth_request.redirect_url = None
     oauth_request.set_cookies = []
 
     # signal that authentication step has been done
@@ -65,7 +67,15 @@ def lti_login(request):
     login(request, user)
 
     # Create redirect response
-    response = redirect(oauth_request.redirect_url)
+    redirect_to = oauth_request.redirect_url
+    if redirect_to and not is_safe_url(url=redirect_to,
+                                       allowed_hosts={request.get_host()},
+                                       require_https=request.is_secure(),
+                                      ):
+        redirect_to = None
+    if redirect_to is None:
+        redirect_to = resolve_url(settings.LOGIN_REDIRECT_URL)
+    response = HttpResponseRedirect(redirect_to)
 
     # set possible cookies
     for args, kwargs in oauth_request.set_cookies:
