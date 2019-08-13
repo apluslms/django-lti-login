@@ -1,4 +1,7 @@
 import logging
+from urllib.parse import urlsplit
+
+from django import VERSION as DJANGO_VERSION
 from django.conf import settings
 from django.contrib.auth import authenticate, login
 from django.core.exceptions import PermissionDenied
@@ -13,6 +16,16 @@ from oauthlib.oauth1 import SignatureOnlyEndpoint
 from .signals import lti_login_authenticated
 from .validators import LTIRequestValidator
 
+
+if DJANGO_VERSION < (1, 11):
+    old_is_safe_url = is_safe_url
+    def is_safe_url(url, allowed_hosts=None, require_https=False):
+        """Implement the new is_safe_url with pre 1.11 is_safe_url"""
+        if allowed_hosts is None:
+            allowed_hosts = (None,)
+        host_ok = any(old_is_safe_url(url, host=host) for host in allowed_hosts)
+        scheme_ok = not require_https or urlsplit(url).scheme == 'https'
+        return host_ok and scheme_ok
 
 
 logger = logging.getLogger('django_lti_login.views')
