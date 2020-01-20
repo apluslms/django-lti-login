@@ -12,7 +12,7 @@ class LTIAuthBackend(ModelBackend):
     """
     Authenticates the trusted user from the LTI request.
     """
-    def authenticate(self, oauth_request=None):
+    def authenticate(self, request, oauth_request=None):
         if not oauth_request:
             return None
         if not oauth_request.user_id:

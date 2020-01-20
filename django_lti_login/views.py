@@ -61,7 +61,7 @@ def lti_login(request):
         raise PermissionDenied('Version is not LTI-1p0 or type is not basic-lti-launch-request for a LTI login request.')
 
     # authenticate user
-    user = authenticate(oauth_request=oauth_request)
+    user = authenticate(request, oauth_request=oauth_request)
     if not user:
         raise PermissionDenied('Authentication of a LTI request did not yield an user')
     if not user.is_active:
