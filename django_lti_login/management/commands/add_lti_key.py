@@ -7,6 +7,8 @@ class Command(BaseCommand):
     help = 'Adds a new lti login key and generates a secret for it'
 
     def add_arguments(self, parser):
+        parser.add_argument('-f', '--force', action='store_true',
+                            help="Overwrite existing keys")
         parser.add_argument('-k', '--key',
                             help="The key. Only alphanumerals are allowed. Default: generate random")
         parser.add_argument('-s', '--secret',
@@ -23,9 +25,13 @@ class Command(BaseCommand):
         lticlient = None
         for attempt in range(1000):
             # create new
-            lticlient = LTIClient()
-            if key:
-                lticlient.key = key
+            if options['force'] and key:
+                try:
+                    lticlient = LTIClient.objects.get(key=key)
+                except LTIClient.DoesNotExist:
+                    lticlient = LTIClient(key=key)
+            else:
+                lticlient = LTIClient(key=key)
             if secret:
                 lticlient.secret = secret
             lticlient.description = desc
