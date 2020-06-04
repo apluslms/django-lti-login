@@ -1,7 +1,8 @@
 # This Dockerfile expect build context to be the root of the repo!
+ARG SERVICE_BASE_VER=1.8
 
 # First, build the library
-FROM apluslms/service-base:django-1.7 as build
+FROM apluslms/service-base:django-$SERVICE_BASE_VER as build
 
 WORKDIR /src
 COPY README.rst requirements.txt setup.py ./
@@ -18,7 +19,7 @@ RUN for d in /install/lib/python*/; do mv "$d/site-packages" "$d/dist-packages";
 
 
 # Second, create the actual service image with the lib
-FROM apluslms/service-base:django-1.7
+FROM apluslms/service-base:django-$SERVICE_BASE_VER
 
 ENV CONTAINER_TYPE="lti-example"
 WORKDIR /srv/lti/
