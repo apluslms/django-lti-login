@@ -21,7 +21,7 @@ class Command(BaseCommand):
         desc = options['desc']
 
         lticlient = None
-        while not lticlient:
+        for attempt in range(1000):
             # create new
             lticlient = LTIClient()
             if key:
@@ -45,6 +45,10 @@ class Command(BaseCommand):
             # save it
             if lticlient:
                 lticlient.save()
+                break
+        else:
+            raise CommandError("Unable to create a valid LTI token wihtin %s tries" % (attempt,))
+
 
         self.stdout.write(self.style.SUCCESS("Successfully created a new lti login key and a secret"))
 
