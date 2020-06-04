@@ -10,7 +10,7 @@ if ROOT_DIR not in sys.path:
 # Basic stuff
 SECRET_KEY = 'not so secret key'
 DEBUG = True
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 ROOT_URLCONF = 'exampleapp.urls'
 STATIC_URL = '/static/'
 WSGI_APPLICATION = 'wsgi.application'

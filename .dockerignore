@@ -1,0 +1,22 @@
+# root/lib
+*
+!README.rst
+!django_lti_login/
+!example/
+!requirements.txt
+!setup.py
+
+# the example
+example/*
+!example/exampleapp/
+!example/manage.py
+!example/wsgi.py
+
+# allways ignore
+.dockerignore
+**/Dockerfile
+**/__pycache__/
+**/*.egg-info/
+build/
+dist/
+venv/
