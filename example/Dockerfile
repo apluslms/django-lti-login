@@ -27,10 +27,7 @@ COPY --from=build /install/lib /usr/local/lib
 COPY example/ /srv/lti/
 
 RUN : \
-  # 1) setup system
  && touch /etc/services.d/epmd/down /etc/services.d/rabbitmq/down \
- && adduser --system --no-create-home --disabled-password --gecos "LTI webapp server,,," --home /srv/lti --ingroup nogroup lti \
- && chown -R lti.nogroup /srv/lti \
  && echo '#!/bin/sh\n\
 . /usr/local/lib/cont-init-functions.sh\n\
 for d in /run/lti /local/lti /local/lti/static /local/lti/media; do\n\
@@ -39,7 +36,11 @@ done\n\
 echo "SECRET_KEY = \"$(head -c 512 /dev/urandom|sha256sum|cut -d" " -f1)\"" >> /srv/lti/exampleapp/settings.py\n\
 ' > /etc/cont-init.d/lti \
  && chmod -x /etc/cont-init.d/lti \
-  # 2) configure Django
+\
+ && adduser --system --no-create-home --disabled-password --gecos "LTI webapp server,,," --home /srv/lti --ingroup nogroup lti \
+ && chown -R lti.nogroup /srv/lti \
+\
+ && python3 -m compileall -q . \
  && echo '\n# Container changes\n\
 STATIC_ROOT = "/local/lti/static/"\n\
 DATABASES = {"default": {\n\
@@ -53,7 +54,6 @@ setuidgid $USER python3 manage.py export_for_aplus -k testlti -l "LTI Example" -
 ' > /srv/lti-init.sh \
  && chmod +x /srv/lti-init.sh \
 \
-  # 3) create empty database
  && create-db.sh lti lti django-migrate.sh \
  && :
 
