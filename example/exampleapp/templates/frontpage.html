@@ -8,4 +8,24 @@
 	<p>
 		<a href="{% url 'logout' %}">Logout</a>
 	</p>
+
+	<div class="panel panel-default">
+		<div class="panel-heading">OAuth/LTI parameters (combination of POST, GET and OAuth defaults)</div>
+		<div class="panel-body">
+			<table class="table">
+				{% for name, value in login_data %}
+					<tr>
+						<th>{{ name }}</th>
+						{% if value is None %}
+							<td style="background: #e6e6e6"></td>
+						{% elif name|default:""|slice:"-4:" == "_url" %}
+							<td><a href="{{ value }}">{{ value }}</a></td>
+						{% else %}
+							<td>{{ value }}</td>
+						{% endif %}
+					</tr>
+				{% endfor %}
+			</table>
+		</div>
+	</div>
 {% endblock %}

@@ -69,6 +69,8 @@ def store_course_info(sender, **kwargs):
         session['course_label'] = course_label
         session['course_name'] = course_name
         session['course_lms'] = course_lms
+        session['lti_data'] = {k: v for k, v in oauth._params.items() if k.lstrip('_')[0].islower()}
+
 
         # Redirect to notresponded page after login
         oauth.redirect_url = reverse('frontpage')
