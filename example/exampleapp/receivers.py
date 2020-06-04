@@ -10,9 +10,13 @@ import logging
 from django.conf import settings
 from django.contrib.auth.signals import user_logged_in
 from django.core.exceptions import PermissionDenied
-from django.core.urlresolvers import reverse
 from django.dispatch import receiver
 from django_lti_login.signals import lti_login_authenticated
+
+try:
+    from django.urls import reverse
+except ImportError:
+    from django.core.urlresolvers import reverse
 
 
 logger = logging.getLogger('exampleapp.receivers')
