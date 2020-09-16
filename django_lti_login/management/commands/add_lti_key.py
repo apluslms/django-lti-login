@@ -25,13 +25,16 @@ class Command(BaseCommand):
         lticlient = None
         for attempt in range(1000):
             # create new
-            if options['force'] and key:
-                try:
-                    lticlient = LTIClient.objects.get(key=key)
-                except LTIClient.DoesNotExist:
+            if key:
+                if options['force']:
+                    try:
+                        lticlient = LTIClient.objects.get(key=key)
+                    except LTIClient.DoesNotExist:
+                        lticlient = LTIClient(key=key)
+                else:
                     lticlient = LTIClient(key=key)
             else:
-                lticlient = LTIClient(key=key)
+                lticlient = LTIClient()
             if secret:
                 lticlient.secret = secret
             lticlient.description = desc
