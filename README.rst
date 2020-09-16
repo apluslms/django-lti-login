@@ -13,7 +13,7 @@ Add :code:`django_lti_login` to :code:`settings.INSTALLED_APPS`.
 
 Add :code:`django_lti_login.backends.LTIAuthBackend` to :code:`settings.AUTHENTICATION_BACKENDS`.
 
-Examinate project in :code:`example` directory for more detailed example.
+Examine project in :code:`example` directory for more detailed example.
 Most relevant parts are marked with :code:`XXX: for django-lti-login`.
 
 Usage
