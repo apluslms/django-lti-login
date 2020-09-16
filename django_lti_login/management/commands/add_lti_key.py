@@ -10,9 +10,9 @@ class Command(BaseCommand):
         parser.add_argument('-f', '--force', action='store_true',
                             help="Overwrite existing keys")
         parser.add_argument('-k', '--key',
-                            help="The key. Only alphanumerals are allowed. Default: generate random")
+                            help="The key. Only alphanumericals are allowed. Default: generate random")
         parser.add_argument('-s', '--secret',
-                            help="A secret for the key. Only alphanumerals are allowed. Default: generate random")
+                            help="A secret for the key. Only alphanumericals are allowed. Default: generate random")
         parser.add_argument('-d', '--desc',
                             required=True,
                             help="A description for this key")
@@ -56,7 +56,7 @@ class Command(BaseCommand):
                 lticlient.save()
                 break
         else:
-            raise CommandError("Unable to create a valid LTI token wihtin %s tries" % (attempt,))
+            raise CommandError("Unable to create a valid LTI token within %s tries" % (attempt,))
 
 
         self.stdout.write(self.style.SUCCESS("Successfully created a new lti login key and a secret"))

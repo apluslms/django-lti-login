@@ -40,7 +40,7 @@ class Command(BaseCommand):
                 .format(c=lticlient)
             )
 
-        if not self.confirmation("Are you sure that you wan't to delete above keys?"):
+        if not self.confirmation("Are you sure that you want to delete above keys?"):
             self.stdout.write(self.style.WARNING("Aborted."))
             return
 
