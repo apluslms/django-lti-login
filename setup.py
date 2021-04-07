@@ -28,7 +28,7 @@ setup(
     description='A simple, yet powerful, LTI login application for Django.',
     long_description=long_description,
     keywords='django lti',
-    url='https://github.com/Aalto-LeTech/django-lti-login',
+    url='https://github.com/apluslms/django-lti-login',
     author='Jaakko Kantojärvi',
     author_email='jaakko@n-1.fi',
     license='MIT',
@@ -47,12 +47,12 @@ setup(
         'Topic :: Software Development :: Build Tools',
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Framework :: Django',
-        'Framework :: Django :: 2.1',
         'Framework :: Django :: 2.2',
 
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3 :: Only',
     ],
 

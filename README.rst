@@ -7,7 +7,7 @@ This app makes it easy to use learning management system (LMS) with LTI 1.0 inte
 Installation
 ------------
 
-Run :code:`pip install git+https://github.com/Aalto-LeTech/django-lti-login.git@master#egg=django-lti-login`.
+Run :code:`pip install git+https://github.com/apluslms/django-lti-login.git@master#egg=django-lti-login`.
 
 Add :code:`django_lti_login` to :code:`settings.INSTALLED_APPS`.
 
@@ -33,7 +33,7 @@ To use the image with `A+ <aplus_>`_, you need to add the following snipped to t
 
 .. _aplus: https://apluslms.github.io
 .. _docker run-lti-example: https://hub.docker.com/r/apluslms/run-lti-example/
-.. _docker-compose.yml: https://github.com/apluslms/course-templates/blob/master/docker-compose.yml
+.. _docker-compose.yml: https://github.com/apluslms/aplus-manual/blob/master/docker-compose.yml
 
 .. code-block:: yaml
 
