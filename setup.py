@@ -24,7 +24,7 @@ requirements = [line.strip() for line in requirements.splitlines()]
 
 setup(
     name='django-lti-login',
-    version='3.1.0',
+    version='3.2.0',
     description='A simple, yet powerful, LTI login application for Django.',
     long_description=long_description,
     keywords='django lti',
@@ -48,6 +48,7 @@ setup(
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Framework :: Django',
         'Framework :: Django :: 2.2',
+        'Framework :: Django :: 3.2',
 
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.6',
