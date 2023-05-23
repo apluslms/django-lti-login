@@ -7,7 +7,7 @@ from django.contrib.auth import authenticate, login
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseRedirect
 from django.shortcuts import resolve_url
-from django.utils.http import is_safe_url
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from oauthlib.common import urlencode
@@ -15,17 +15,6 @@ from oauthlib.oauth1 import SignatureOnlyEndpoint
 
 from .signals import lti_login_authenticated
 from .validators import LTIRequestValidator
-
-
-if DJANGO_VERSION < (1, 11):
-    old_is_safe_url = is_safe_url
-    def is_safe_url(url, allowed_hosts=None, require_https=False):
-        """Implement the new is_safe_url with pre 1.11 is_safe_url"""
-        if allowed_hosts is None:
-            allowed_hosts = (None,)
-        host_ok = any(old_is_safe_url(url, host=host) for host in allowed_hosts)
-        scheme_ok = not require_https or urlsplit(url).scheme == 'https'
-        return host_ok and scheme_ok
 
 
 logger = logging.getLogger('django_lti_login.views')
@@ -81,10 +70,11 @@ def lti_login(request):
 
     # Create redirect response
     redirect_to = oauth_request.redirect_url
-    if redirect_to and not is_safe_url(url=redirect_to,
-                                       allowed_hosts={request.get_host()},
-                                       require_https=request.is_secure(),
-                                      ):
+    if redirect_to and not url_has_allowed_host_and_scheme(
+            url=redirect_to,
+            allowed_hosts={request.get_host()},
+            require_https=request.is_secure(),
+            ):
         redirect_to = None
     if redirect_to is None:
         redirect_to = resolve_url(settings.LOGIN_REDIRECT_URL)

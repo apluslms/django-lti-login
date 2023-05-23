@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.contrib.auth.signals import user_logged_in
-from django.utils.translation import LANGUAGE_SESSION_KEY, check_for_language
+from django.utils.translation import check_for_language
 from .apps import app_settings
 
 
@@ -24,9 +24,7 @@ def set_user_language_from_lti(sender, **kwargs):
     if not language or not check_for_language(language):
         return None
 
-    if hasattr(request, 'session'):
-        request.session[LANGUAGE_SESSION_KEY] = language
-    elif LANGUAGE_COOKIE_NAME not in request.COOKIES:
+    if LANGUAGE_COOKIE_NAME not in request.COOKIES:
         oauth.set_cookies.append((
             (LANGUAGE_COOKIE_NAME, language),
             LANGUAGE_COOKIE_ARGS,
