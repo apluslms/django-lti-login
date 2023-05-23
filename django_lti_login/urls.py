@@ -7,10 +7,10 @@ Should add something like following to project urls.py:
     url(r'^auth/', include('django.contrib.auth.urls')), # for reference
 
 """
-from django.conf.urls import url
+from django.urls import re_path
 
 from .views import lti_login
 
 urlpatterns = [
-    url(r'^lti_login/?$', lti_login, name='lti_login'),
+    re_path(r'^lti_login/?$', lti_login, name='lti_login'),
 ]
