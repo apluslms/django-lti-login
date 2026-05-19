@@ -1,7 +1,7 @@
 """
 Url conf for example app
 """
-from django.conf.urls import url, include
+from django.urls import include, path, re_path
 from django.contrib import admin
 from django.contrib.auth import views as auth
 
@@ -15,19 +15,19 @@ else:
     auth_logout = auth.logout
 
 auth_urlpatterns = [
-    url(r'^login/$', auth_login,
+    path('login/', auth_login,
         {'template_name': 'login.html'},
         name='login'),
-    url(r'^logout/$', auth_logout,
+    path('logout/', auth_logout,
         {'next_page': '/'},
         name='logout'),
 ]
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
-    url(r'^i18n/', include('django.conf.urls.i18n')),
-    url(r'^auth/', include('django_lti_login.urls')), # XXX: for django-lti-login
-    url(r'^auth/', include(auth_urlpatterns)),
+    re_path(r'^admin/', admin.site.urls),
+    path('i18n/', include('django.conf.urls.i18n')),
+    path('auth/', include('django_lti_login.urls')), # XXX: for django-lti-login
+    path('auth/', include(auth_urlpatterns)),
 
-    url(r'^$', frontpage, name='frontpage'),
+    path('', frontpage, name='frontpage'),
 ]

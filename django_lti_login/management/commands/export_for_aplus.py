@@ -6,7 +6,7 @@ from django.core.management.base import BaseCommand, CommandError
 try:
     from django.urls import reverse
 except ImportError:
-    from django.core.urlresolvers import reverse
+    from django.urls import reverse
 
 from django_lti_login.models import LTIClient
 

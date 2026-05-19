@@ -16,7 +16,7 @@ from django_lti_login.signals import lti_login_authenticated
 try:
     from django.urls import reverse
 except ImportError:
-    from django.core.urlresolvers import reverse
+    from django.urls import reverse
 
 
 logger = logging.getLogger('exampleapp.receivers')
